@@ -30,7 +30,7 @@ function App() {
       highlights: ['撰写相关投资备案材料', '税局业务', '填写外勤备案材料', '开发票、申报税等'],
     },
     {
-      company: '内蒙古新科锐铂制品技术开发有限公司',
+      company: '内蒙古新科驼绒制品技术开发有限公司',
       role: '会计助理',
       period: '2022.07 - 2023.02',
       highlights: ['粘贴凭证、核对凭证', '开具发票、报税', '协助开工资金、社保等'],
@@ -119,7 +119,7 @@ function App() {
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={shouldReduceMotion ? undefined : { y: -3, rotate: 0.8, scale: 1.015 }}
               >
-                <img className="avatar-img" src="/profile.png" alt="杨丽英头像" />
+                <img className="avatar-img" src="/profile.jpg" alt="杨丽英头像" />
                 <div className="avatar-ring" aria-hidden="true" />
               </motion.div>
               <motion.div
