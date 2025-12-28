@@ -55,6 +55,28 @@ function App() {
       <header className="header">
         <div className="header-bg" aria-hidden="true">
           <motion.div
+            className="header-gradient"
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                    scale: [1, 1.02, 1],
+                    rotate: [0, 0.6, 0],
+                    opacity: [0.85, 1, 0.85],
+                  }
+            }
+            transition={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    duration: 14,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }
+            }
+          />
+          <motion.div
             className="bg-blob blob-1"
             animate={shouldReduceMotion ? undefined : { y: [0, -12, 0], x: [0, 10, 0] }}
             transition={
@@ -80,14 +102,22 @@ function App() {
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <div className="hero">
+          <motion.div
+            className="hero"
+            initial={shouldReduceMotion ? undefined : 'hidden'}
+            animate={shouldReduceMotion ? undefined : 'show'}
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+            }}
+          >
             <div className="hero-left">
               <motion.div
                 className="avatar-container"
                 initial={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.9, rotate: -2 }}
                 animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={shouldReduceMotion ? undefined : { y: -2, rotate: 0.6 }}
+                whileHover={shouldReduceMotion ? undefined : { y: -3, rotate: 0.8, scale: 1.015 }}
               >
                 <img className="avatar-img" src="/profile.png" alt="杨丽英头像" />
                 <div className="avatar-ring" aria-hidden="true" />
@@ -134,14 +164,23 @@ function App() {
                     href="/杨丽英简历.pdf"
                     download
                     className="resume-button"
-                    whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
+                    whileHover={
+                      shouldReduceMotion
+                        ? undefined
+                        : { scale: 1.03, y: -1, boxShadow: '0 14px 34px rgba(0,0,0,0.18)' }
+                    }
                     whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                   >
                     下载简历
                   </motion.a>
-                  <a className="ghost-button" href="#contact">
+                  <motion.a
+                    className="ghost-button"
+                    href="#contact"
+                    whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                  >
                     联系我
-                  </a>
+                  </motion.a>
                 </motion.div>
               </motion.div>
             </div>
@@ -179,7 +218,7 @@ function App() {
                 </motion.div>
               </motion.div>
             </motion.div>
-          </div>
+          </motion.div>
         </motion.div>
       </header>
 

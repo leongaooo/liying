@@ -29,9 +29,9 @@ body {
 .header {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #4f46e5 0%, #9333ea 45%, #f43f5e 120%);
+  background: #0b1020;
   color: white;
-  padding: 3rem 0;
+  padding: clamp(2.2rem, 5vw, 3.2rem) 0;
   text-align: center;
 }
 
@@ -47,7 +47,26 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.75;
+  opacity: 1;
+}
+
+.header-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #4f46e5, #9333ea, #f43f5e, #22c55e, #06b6d4);
+  background-size: 240% 240%;
+  background-position: 0% 50%;
+  filter: saturate(1.2) contrast(1.05);
+  opacity: 0.95;
+}
+
+.header-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 520px at 18% 18%, rgba(255, 255, 255, 0.12), transparent 60%),
+    radial-gradient(720px 520px at 85% 26%, rgba(255, 255, 255, 0.1), transparent 55%),
+    radial-gradient(900px 650px at 50% 95%, rgba(0, 0, 0, 0.24), transparent 60%);
 }
 
 .bg-blob {
@@ -56,7 +75,8 @@ body {
   height: 420px;
   filter: blur(50px);
   border-radius: 999px;
-  opacity: 0.45;
+  opacity: 0.42;
+  mix-blend-mode: overlay;
 }
 
 .blob-1 {
@@ -96,6 +116,21 @@ body {
   font-size: 1.1rem;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(110deg, transparent 20%, rgba(79, 70, 229, 0.22) 45%, transparent 70%);
+}
+
+.resume-button:hover::after {
+  transform: translateX(120%);
+  transition: transform 650ms ease;
 }
 
 /* Main Content */
@@ -111,7 +146,7 @@ body {
 .hero {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.6rem;
+  gap: 1.25rem;
   align-items: center;
 }
 
@@ -152,6 +187,16 @@ body {
   opacity: 0.75;
   mask: radial-gradient(circle, transparent 61%, #000 62%);
   pointer-events: none;
+  animation: avatarSpin 7s linear infinite;
+}
+
+@keyframes avatarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .hero-identity {
@@ -211,6 +256,18 @@ body {
   text-align: left;
   backdrop-filter: blur(10px);
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  opacity: 0.35;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.18));
+  transform: translateX(-35%);
+  pointer-events: none;
 }
 
 .stat-card:hover {
@@ -393,6 +450,65 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 480px) {
+  .main {
+    padding: 1.35rem 1rem;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+  }
+
+  .hero-left {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.95rem;
+  }
+
+  .avatar-container {
+    width: 116px;
+    height: 116px;
+    border-width: 3px;
+  }
+
+  .name {
+    font-size: 2.25rem;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .subtitle {
+    font-size: 0.98rem;
+  }
+
+  .hero-actions {
+    width: 100%;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+
+  .resume-button,
+  .ghost-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-right {
+    justify-content: stretch;
+  }
+
+  .stat-grid {
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 0.9rem;
+  }
+}
+
 @media (min-width: 768px) {
   .hero {
     grid-template-columns: 1.4fr 1fr;
@@ -426,5 +542,11 @@ body {
 @media (min-width: 1024px) {
   .main {
     padding: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ring {
+    animation: none;
   }
 }
