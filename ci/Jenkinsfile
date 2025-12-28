@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_DIR = "/var/www/liying"
+    }
+
+    stages {
+        stage('Checkout') {
+        steps { checkout scm }
+        }
+        stage('Install') {
+        steps { sh 'npm ci' }
+        }
+        stage('Build') {
+        steps { sh 'npm run build' }
+        }
+        stage('Deploy') {
+        steps {
+            sh '''#!/usr/bin/env bash
+            set -euo pipefail
+            rsync -a --delete dist/ "${DEPLOY_DIR}/"
+            '''
+        }
+        }
+    }
+}
