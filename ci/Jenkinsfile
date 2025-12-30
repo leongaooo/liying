@@ -1,27 +1,75 @@
-pipeline {
-    agent any
+def rollbackChoicesScript = '''
+  def releasesDir = new File("/var/www/liying/releases")
+  if (!releasesDir.exists()) {
+    return ["<none>"]
+  }
+  def dirs = releasesDir.listFiles().findAll { it.isDirectory() }
+  if (!dirs) {
+    return ["<none>"]
+  }
+  return dirs.sort { a, b -> b.name <=> a.name }.collect { it.name }
+'''.stripIndent()
 
-    environment {
-        DEPLOY_DIR = "/var/www/liying"
+properties([
+  parameters([
+    [$class: 'ChoiceParameterDefinition',
+      name: 'ACTION',
+      description: 'Deploy a new build or rollback to a previous release',
+      choices: 'deploy\nrollback'
+    ],
+    [$class: 'ChoiceParameter',
+      name: 'ROLLBACK_VERSION',
+      description: 'Release dir name under releases/',
+      choiceType: 'PT_SINGLE_SELECT',
+      filterLength: 1,
+      filterable: false,
+      randomName: 'choice-parameter-rollback-version',
+      script: [$class: 'GroovyScript',
+        script: [classpath: [], sandbox: false, script: rollbackChoicesScript],
+        fallbackScript: [classpath: [], sandbox: false, script: 'return ["<none>"]']
+      ]
+    ]
+  ])
+])
+
+def deployEnv = [
+  'DEPLOY_BASE=/var/www/liying',
+  'RELEASES_DIR=/var/www/liying/releases',
+  'CURRENT_LINK=/var/www/liying/current',
+  'KEEP_RELEASES=5'
+]
+
+node {
+  timestamps {
+    stage('Checkout') {
+      checkout scm
     }
 
-    stages {
-        stage('Checkout') {
-        steps { checkout scm }
+    def action = (params.ACTION ?: 'deploy').trim()
+    if (action == 'deploy') {
+      stage('Install') {
+        sh 'npm ci'
+      }
+      stage('Build') {
+        sh 'npm run build'
+      }
+      stage('Deploy') {
+        withEnv(deployEnv) {
+          sh 'bash ci/deploy.sh'
         }
-        stage('Install') {
-        steps { sh 'npm ci' }
+      }
+    } else if (action == 'rollback') {
+      stage('Rollback') {
+        def rollbackVersion = params.ROLLBACK_VERSION?.trim()
+        if (!rollbackVersion || rollbackVersion == '<none>') {
+          error 'ROLLBACK_VERSION is required'
         }
-        stage('Build') {
-        steps { sh 'npm run build' }
+        withEnv(deployEnv + ["ROLLBACK_VERSION=${rollbackVersion}"]) {
+          sh 'bash ci/rollback.sh'
         }
-        stage('Deploy') {
-        steps {
-            sh '''#!/usr/bin/env bash
-            set -euo pipefail
-            rsync -a --delete dist/ "${DEPLOY_DIR}/"
-            '''
-        }
-        }
+      }
+    } else {
+      error "Unknown ACTION: ${action}"
     }
+  }
 }
