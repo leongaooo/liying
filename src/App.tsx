@@ -134,7 +134,7 @@ function App() {
                   animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  杨丽英
+                  杨丽英英英英英
                 </motion.h1>
                 <motion.p
                   className="title"
